@@ -72,7 +72,7 @@ def format_data_lille(lille):
         velo_available=i["fields"]['nbvelosdispo']
         place_available=i["fields"]['nbplacesdispo']
 
-        string_to_encode="Lille"+name
+        string_to_encode="Lille"+name+str(i["fields"]['localisation'][0])+str(i["fields"]['localisation'][1])
         string_to_encode=string_to_encode.encode('utf-8')
         unique_id= hashlib.md5()
         unique_id.update(string_to_encode)
@@ -91,7 +91,7 @@ def format_data_lille(lille):
             db.history.insert_one(datasetH)
         except DuplicateKeyError:
             pass"""
-
+    print(array_of_datas_C)
     return array_of_datas_C,array_of_datas_H
 
 
