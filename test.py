@@ -8,6 +8,12 @@ atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myF
 
 db=atlas.dbvelos
 
-x = db["history"].delete_many({})
+#x = db["history"].delete_many({})
 
-x = db["stations_states"].delete_many({})
+#x = db["stations_states"].delete_many({})
+x=db.stations_states.find({"ville":"Lens"})
+empty=True
+for i in x :
+    empty=False
+    break
+print(empty)

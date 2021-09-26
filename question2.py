@@ -52,9 +52,13 @@ def get_vlille_lyon():
 
 
 #Lille
-def insert_station_lille(lille):
+def format_data_lille(lille):
     #First, let's clear all station_state collection containing "Lille" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Lille"})
+    #x = db["stations_states"].delete_many({"ville":"Lille"})
+
+    array_of_datas_H=[]
+    array_of_datas_C=[]
+
     for i in lille:
         
         #GET DATA IN THE RIGHT FORMAT
@@ -78,23 +82,22 @@ def insert_station_lille(lille):
     
         timestamp =calendar.timegm(time.gmtime())  
 
-        datasetH={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
-
-        #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-
-        try:
+        datasetH={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        array_of_datas_H.append(datasetH)
+        array_of_datas_C.append(datasetC)
+        """try:
             db.stations_states.insert_one(datasetC)
             db.history.insert_one(datasetH)
         except DuplicateKeyError:
-            pass
+            pass"""
 
-    return 1
+    return array_of_datas_C,array_of_datas_H
 
 
 
 #Rennes
-def insert_station_rennes(rennes):
+def format_data_rennes(rennes):
     #First, let's clear all station_state collection containing "Rennes" as "ville" : 
     x = db["stations_states"].delete_many({"ville":"Rennes"})
 
@@ -118,9 +121,8 @@ def insert_station_rennes(rennes):
 
         timestamp=calendar.timegm(time.gmtime())
 
-        datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
-
+        datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
 
         
@@ -132,7 +134,7 @@ def insert_station_rennes(rennes):
     return 1 
 
 #Paris
-def insert_station_paris(paris):
+def format_data_paris(paris):
 
     #First, let's clear all station_state collection containing "Rennes" as "ville" : 
     x = db["stations_states"].delete_many({"ville":"Paris"})
@@ -155,9 +157,8 @@ def insert_station_paris(paris):
 
         timestamp=calendar.timegm(time.gmtime())  
         
-        datasetH={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
-        
+        datasetH={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         try:
@@ -170,7 +171,7 @@ def insert_station_paris(paris):
 
 
 #Lyon
-def insert_station_lyon(lyon):
+def format_data_lyon(lyon):
 
     #First, let's clear all station_state collection containing "Rennes" as "ville" : 
     x = db["stations_states"].delete_many({"ville":"Lyon"})
@@ -198,10 +199,8 @@ def insert_station_lyon(lyon):
         unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
         unique_id=int(unique_id)
 
-        datasetC={"_id":unique_id, "ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
-
-        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
-
+        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         try:
@@ -212,20 +211,36 @@ def insert_station_lyon(lyon):
     return 1
 
 
+def insert_in_db(ville,array_Current,array_History):
+    db.history.insert_many(array_History)
 
+    #check if datas already exist for this city. If yes just update what is found, else insert all
+    x=db.stations_states.find({"ville":ville})
+    empty=True
+    for i in x :
+        empty=False
+        break
+    
+    if(empty):
+        db.stations_states.insert_many(array_Current)
+    else: 
+        for i in array_Current:
+
+    return 1 
 
 
 resp=input("De quelle ville voulez-vous stocker les informations sur les stations de vélos en libre service ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES | (OTHER) : quitter")
 
 while(True):
     if(resp=="1"):
-        insert_station_lille(get_vlille_lille())
+        arrays=format_data_lille(get_vlille_lille())
+        insert_in_db("Lille",arrays[0],arrays[1])
     elif(resp=="2"):   
-        insert_station_paris(get_vlille_paris()) 
+        format_data_paris(get_vlille_paris()) 
     elif(resp=="3"):
-        insert_station_lyon(get_vlille_lyon())
+        format_data_lyon(get_vlille_lyon())
     elif(resp=="4"):
-        insert_station_rennes(get_vlille_rennes())
+        format_data_rennes(get_vlille_rennes())
     else :
         break
     time.sleep(45)
