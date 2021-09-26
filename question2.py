@@ -103,7 +103,7 @@ def insert_station_rennes(rennes):
         place_available=i["fields"]['nombreemplacementsdisponibles']
         unique_id=i["fields"]['idstation']
         timestamp=calendar.timegm(time.gmtime())  
-        dataset={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
+        dataset={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
 
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
 
@@ -126,7 +126,12 @@ def insert_station_paris(paris):
         geoloc=[paris[1]["stations"][i]["lat"],paris[1]["stations"][i]["lon"]]
         size=paris[0]["stations"][i]['numBikesAvailable']+paris[0]["stations"][i]['num_docks_available']
         
-        available=paris[0]["stations"][i]["is_installed"]
+        availablle=paris[0]["stations"][i]["is_installed"]
+
+        available="En Service"
+        if availablle!=1:
+            available="Pas Disponible"
+
         velo_available=paris[0]["stations"][i]['numBikesAvailable']
         place_available=paris[0]["stations"][i]['num_docks_available']
         unique_id=paris[0]["stations"][i]['station_id']
@@ -172,6 +177,7 @@ def insert_station_lyon(lyon):
 
 
 resp=input("De quelle ville voulez-vous stocker les informations sur les stations de vélos en libre service ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES | (OTHER) : quitter")
+
 while(True):
     if(resp=="1"):
         insert_station_lille(get_vlille_lille())
