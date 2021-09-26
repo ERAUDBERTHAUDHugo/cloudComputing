@@ -213,20 +213,22 @@ def format_data_lyon(lyon):
 
 def insert_in_db(ville,array_Current,array_History):
     db.history.insert_many(array_History)
-    db["stations_states"].delete_many({})
-    db.stations_states.insert_many(array_Current)
+    #db["stations_states"].delete_many({"villle":ville})
+    #db.stations_states.insert_many(array_Current)
     #check if datas already exist for this city. If yes just update what is found, else insert all
-    # x=db.stations_states.find({"ville":ville})
-    # empty=True
-    # for i in x :
-    #     empty=False
-    #     break
+    x=db.stations_states.find({"ville":ville})
+    empty=True
+    for i in x :
+        empty=False
+       break
     
-    # if(empty):
-    #     db.stations_states.insert_many(array_Current)
-    # else: 
-    #     for i in array_Current:
-
+    if(empty):
+        db.stations_states.insert_many(array_Current)
+    else: 
+        for i in array_Current:
+            myquery=i["_id"]
+            newvalues={"velo_available":i["_id"],"velo_available":,"":}
+            db.stations_states.update_one({"_id":myquey}, newvalues)
     return 1 
 
 
