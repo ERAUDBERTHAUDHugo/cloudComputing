@@ -164,12 +164,15 @@ def insert_station_lyon(lyon):
         available=lyon[0]["stations"][i]["is_installed"]
         timestamp=calendar.timegm(time.gmtime())
         unique_id=lyon[1]["stations"][i]["station_id"]
-        dataset={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
+
+        datasetC={"_id":unique_id, "ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
+
+        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
 
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
-        db.stations_states.insert_one(dataset)
-        db.history.insert_one(dataset)   
+        db.stations_states.insert_one(datasetC)
+        db.history.insert_one(datasetH)   
     return 1
 
 
