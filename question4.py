@@ -3,7 +3,6 @@ import json
 import time
 import calendar
 from pprint import pprint
-from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 import hashlib
 
@@ -68,7 +67,7 @@ def insert_station_lille(lille):
         velo_available=i["fields"]['nbvelosdispo']
         place_available=i["fields"]['nbplacesdispo']
 
-        string_to_encode="Lille"+name
+        string_to_encode="Lille"+i["fields"]["nom"]
         string_to_encode=string_to_encode.encode('utf-8')
         unique_id= hashlib.md5()
         unique_id.update(string_to_encode)
@@ -78,16 +77,12 @@ def insert_station_lille(lille):
     
         timestamp =calendar.timegm(time.gmtime())  
 
-        datasetH={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
-
+        dataset={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
+        
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-
-        try:
-            db.stations_states.insert_one(datasetC)
-            db.history.insert_one(datasetH)
-        except DuplicateKeyError:
-            pass
+       
+        db.stations_states.insert_one(dataset)
+        db.history.insert_one(dataset)   
 
     return 1
 
@@ -106,28 +101,15 @@ def insert_station_rennes(rennes):
         size=i["fields"]['nombreemplacementsactuels']
         velo_available=i["fields"]['nombrevelosdisponibles']
         place_available=i["fields"]['nombreemplacementsdisponibles']
-
         unique_id=i["fields"]['idstation']
-
-        string_to_encode="Rennes"+i["fields"]["nom"]
-        string_to_encode=string_to_encode.encode('utf-8')
-        unique_id= hashlib.md5()
-        unique_id.update(string_to_encode)
-        unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
-        unique_id=int(unique_id)
-
-        timestamp=calendar.timegm(time.gmtime())
-
-        datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
+        timestamp=calendar.timegm(time.gmtime())  
+        dataset={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
 
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
 
-        
-        db.stations_states.insert_one(datasetC)
-        db.history.insert_one(datasetH)
-    
-            
+        db.stations_states.insert_one(dataset)
+        db.history.insert_one(dataset)   
+
 
     return 1 
 
@@ -136,6 +118,7 @@ def insert_station_paris(paris):
 
     #First, let's clear all station_state collection containing "Rennes" as "ville" : 
     x = db["stations_states"].delete_many({"ville":"Paris"})
+
     for i in range(0,len(paris[1]["stations"])):
        
         #print(paris[0]["stations"][i])
@@ -152,19 +135,14 @@ def insert_station_paris(paris):
         velo_available=paris[0]["stations"][i]['numBikesAvailable']
         place_available=paris[0]["stations"][i]['num_docks_available']
         unique_id=paris[0]["stations"][i]['station_id']
-
         timestamp=calendar.timegm(time.gmtime())  
         
-        datasetH={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
-        
+        dataset={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
+
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-        
-        try:
-            db.stations_states.insert_one(datasetC)
-            db.history.insert_one(datasetH)
-        except DuplicateKeyError:
-            pass
+
+        db.stations_states.insert_one(dataset)
+        db.history.insert_one(dataset)   
 
     return 1
 
@@ -183,20 +161,9 @@ def insert_station_lyon(lyon):
         size=lyon[0]["stations"][i]['num_bikes_available']+lyon[0]["stations"][i]['num_docks_available']
         velo_available=lyon[0]["stations"][i]['num_bikes_available']
         place_available=lyon[0]["stations"][i]['num_docks_available']
-        availlable=lyon[0]["stations"][i]["is_installed"]
-        available="En Service"
-        if str(availlable)!="1":
-            available="Pas en service."
+        available=lyon[0]["stations"][i]["is_installed"]
         timestamp=calendar.timegm(time.gmtime())
-
         unique_id=lyon[1]["stations"][i]["station_id"]
-
-        string_to_encode="Lyon"+name
-        string_to_encode=string_to_encode.encode('utf-8')
-        unique_id= hashlib.md5()
-        unique_id.update(string_to_encode)
-        unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
-        unique_id=int(unique_id)
 
         datasetC={"_id":unique_id, "ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
 
@@ -204,11 +171,8 @@ def insert_station_lyon(lyon):
 
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
-        try:
-            db.stations_states.insert_one(datasetC)
-            db.history.insert_one(datasetH)
-        except DuplicateKeyError:
-            pass  
+        db.stations_states.insert_one(datasetC)
+        db.history.insert_one(datasetH)   
     return 1
 
 

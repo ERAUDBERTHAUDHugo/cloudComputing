@@ -8,5 +8,6 @@ atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myF
 
 db=atlas.dbvelos
 
-x = db["history"].delete_many({"ville":"Paris"})
+x = db["history"].delete_many({})
 
+x = db["stations_states"].delete_many({})
