@@ -36,7 +36,7 @@ def get_vlille_paris():
     return  [response_json_statut.get("data", []),response_json_station.get("data", [])]
 
 
-def get_ville_lyon():
+def get_vlille_lyon():
     url_stations_statut="https://transport.data.gouv.fr/gbfs/lyon/station_status.json"
     url_station_infos="https://transport.data.gouv.fr/gbfs/lyon/station_information.json"
     response_statut = requests.request("GET", url_stations_statut)
@@ -115,9 +115,10 @@ def insert_station_rennes(rennes):
 
 #Paris
 def insert_station_paris(paris):
+
     #First, let's clear all station_state collection containing "Rennes" as "ville" : 
     x = db["stations_states"].delete_many({"ville":"Paris"})
-    print(len(paris[1]["stations"]))
+
     for i in range(0,len(paris[1]["stations"])):
        
         #print(paris[0]["stations"][i])
@@ -143,18 +144,27 @@ def insert_station_paris(paris):
 
 #Lyon
 def insert_station_lyon(lyon):
- 
 
+    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
+    x = db["stations_states"].delete_many({"ville":"Lyon"})
+    
     for i in range(0,len(lyon[1]["stations"])):
     
         #print(paris[0]["stations"][i])
         name=lyon[1]["stations"][i]["name"]
         geoloc=[lyon[1]["stations"][i]["lat"],lyon[1]["stations"][i]["lon"]]
         size=lyon[0]["stations"][i]['num_bikes_available']+lyon[0]["stations"][i]['num_docks_available']
-        tpe=""
+        velo_available=lyon[0]["stations"][i]['num_bikes_available']
+        place_available=lyon[0]["stations"][i]['num_docks_available']
         available=lyon[0]["stations"][i]["is_installed"]
-        dataset={"geolocalisation":geoloc,"size":size,"name":name,"tpe":tpe,"available":available}
-        print(dataset)
+        timestamp=calendar.timegm(time.gmtime())
+        unique_id=lyon[1]["stations"][i]["station_id"]
+        dataset={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
+
+        #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
+        
+        db.stations_states.insert_one(dataset)
+        db.history.insert_one(dataset)   
     return 1
 
 
