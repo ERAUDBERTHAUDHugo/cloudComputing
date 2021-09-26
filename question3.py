@@ -18,16 +18,58 @@ db=atlas.dbvelos
 resp=input("Voulez-vous selectionner une ville ?\n (1):Lille (2):Paris (3):Lyon (4):Rennes (Other):Non\n")
 lat=input("Entrez votre latitude")
 lon=input("Entrez votre longitude")
+nbreStation=input("combien de stations voulez-vous afficher ?")
 
 
 if resp=="1":
-    
-    pass
+    ret=db.stations_states.find({"ville":"Lille","location": {"$near": {
+        "$geometry":{
+            "type":"Point",
+            "coordinates":[float(lat), float(lon)]},
+       
+        }
+    }}).limit(int(nbreStation))
+    for i in ret:
+        pprint(i)
 elif resp=="2":
-    pass
+    ret=db.stations_states.find({"ville":"Paris","location": {"$near": {
+        "$geometry":{
+            "type":"Point",
+            "coordinates":[float(lat), float(lon)]},
+       
+        }
+    }}).limit(int(nbreStation))
+    for i in ret:
+        pprint(i)
+    
 elif resp == "3":
-    pass
+    ret=db.stations_states.find({"ville":"Lyon","location": {"$near": {
+        "$geometry":{
+            "type":"Point",
+            "coordinates":[float(lat), float(lon)]},
+       
+        }
+    }}).limit(int(nbreStation))
+    for i in ret:
+        pprint(i)
 elif resp=="4":
-    pass
+    ret=db.stations_states.find({"ville":"Rennes","location": {"$near": {
+        "$geometry":{
+            "type":"Point",
+            "coordinates":[float(lat), float(lon)]},
+       
+        }
+    }}).limit(int(nbreStation))
+    for i in ret:
+        pprint(i)
 else:
-    pass
+    ret=db.stations_states.find({"location": {"$near": {
+        "$geometry":{
+            "type":"Point",
+            "coordinates":[float(lat), float(lon)]},
+       
+        }
+    }}).limit(int(nbreStation))
+    for i in ret:
+        print(i)
+    
