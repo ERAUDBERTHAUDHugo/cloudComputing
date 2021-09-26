@@ -82,8 +82,8 @@ def format_data_lille(lille):
     
         timestamp =calendar.timegm(time.gmtime())  
 
-        datasetH={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        datasetH={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
         """try:
@@ -121,8 +121,8 @@ def format_data_rennes(rennes):
 
         timestamp=calendar.timegm(time.gmtime())
 
-        datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
 
         
@@ -157,8 +157,8 @@ def format_data_paris(paris):
 
         timestamp=calendar.timegm(time.gmtime())  
         
-        datasetH={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        datasetH={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         try:
@@ -199,8 +199,8 @@ def format_data_lyon(lyon):
         unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
         unique_id=int(unique_id)
 
-        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,location: {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
+        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         try:
@@ -213,18 +213,19 @@ def format_data_lyon(lyon):
 
 def insert_in_db(ville,array_Current,array_History):
     db.history.insert_many(array_History)
-
+    db["stations_states"].delete_many({})
+    db.stations_states.insert_many(array_Current)
     #check if datas already exist for this city. If yes just update what is found, else insert all
-    x=db.stations_states.find({"ville":ville})
-    empty=True
-    for i in x :
-        empty=False
-        break
+    # x=db.stations_states.find({"ville":ville})
+    # empty=True
+    # for i in x :
+    #     empty=False
+    #     break
     
-    if(empty):
-        db.stations_states.insert_many(array_Current)
-    else: 
-        for i in array_Current:
+    # if(empty):
+    #     db.stations_states.insert_many(array_Current)
+    # else: 
+    #     for i in array_Current:
 
     return 1 
 
