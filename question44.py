@@ -48,8 +48,8 @@ def fourty4():
 
 	db.stations_states.aggregate([
 
-		{"$match":{"timestamp":{
-		
+		{"$match":{"timestamp"[0]:{"$in"
+
 		}}},
 		{"$group":{}}
 

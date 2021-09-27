@@ -6,6 +6,7 @@ from pprint import pprint
 from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 import hashlib
+from datetime import datetime
 
 # IN THIS QUESTION WE ARE STORING ALL THE DATAS FROM THE API's In 2 COLLECTIONS : ONE FOR THE CURRENT STATE OF THE STATIONS 
 #(stations_states) AND ONE FOR THE HISTORY OF DATAS (history)
@@ -85,8 +86,10 @@ def format_data_lille(lille):
     
         timestamp =calendar.timegm(time.gmtime())  
 
-        datasetH={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        dt_obj= datetime.fromtimestamp(timestamp)
+
+        datasetH={"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
     
@@ -118,9 +121,10 @@ def format_data_rennes(rennes):
         unique_id=int(unique_id)
 
         timestamp=calendar.timegm(time.gmtime())
+        dt_obj= datetime.fromtimestamp(timestamp)
 
-        datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        datasetH={"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
@@ -151,9 +155,10 @@ def format_data_paris(paris):
         unique_id=paris[0]["stations"][i]['station_id']
 
         timestamp=calendar.timegm(time.gmtime())  
-        
-        datasetH={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+
+        dt_obj= datetime.fromtimestamp(timestamp)
+        datasetH={"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         array_of_datas_H.append(datasetH)
@@ -182,6 +187,7 @@ def format_data_lyon(lyon):
             available="Pas en service."
         timestamp=calendar.timegm(time.gmtime())
 
+        dt_obj= datetime.fromtimestamp(timestamp)
         unique_id=lyon[1]["stations"][i]["station_id"]
 
         string_to_encode="Lyon"+name
@@ -191,8 +197,8 @@ def format_data_lyon(lyon):
         unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
         unique_id=int(unique_id)
 
-        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
+        datasetH={"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         array_of_datas_H.append(datasetH)
@@ -214,9 +220,11 @@ def insert_in_db(ville,array_Current,array_History):
     else: 
         for i in array_Current:        
             timestamp=calendar.timegm(time.gmtime())
+            dt_obj= datetime.fromtimestamp(timestamp)
             myquery=i["_id"]
-            newvalues={ "$set":{"velo_available":i["velo_available"],"place_available":i["place_available"],'timestamp':timestamp}}
+            newvalues={ "$set":{"velo_available":i["velo_available"],"place_available":i["place_available"],'timestamp':[dt_obj.weekday(),dt_obj.hour]}}
             db.stations_states.update_one({"_id":myquery}, newvalues)
+
     return 1 
 
 
