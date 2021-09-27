@@ -11,9 +11,9 @@ atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myF
 
 db=atlas.dbvelos
 
-lat=input("Entrez lat\n")
-lon=input("Entrez lon\n")
-dist=input("Entrez distance\n")
+# lat=input("Entrez lat\n")
+# lon=input("Entrez lon\n")
+# dist=input("Entrez distance\n")
 
 
 def deactivateStation(lat,lon,dist):
@@ -36,25 +36,32 @@ def deactivateStation(lat,lon,dist):
 # deactivateStation(lat,lon,dist)
 
 
-def fourty4():
+def get_stat():
 
-	tt=datetime.timestamp(datetime.now())
+	# tt=datetime.timestamp(datetime.now())
 
-	dt_obj= datetime.fromtimestamp(tt)
+	# dt_obj= datetime.fromtimestamp(tt)
 
-	print(dt_obj)
+	# print(dt_obj)
 
-	input("ok")
+	# input("ok")
 
-	db.stations_states.aggregate([
+	x=db.stations_states.aggregate([
 
-		{"$match":{"timestamp"[0]:{"$in"
-
-		}}},
-		{"$group":{}}
-
+		{"$match":{"timestamp.day":{"$in":[0,1,2,3,4]}}},
+		{"$group":{"_id" :{
+			"velo_available/place_available" : {
+				"$lt" : 0.20}
+			}
+		}},
+		# {"$sort":{"velo_available/place_available":-1}}
 		])
 
-fourty4()
+
+	print(x)
+	for i in x:
+		print(i)
+
+get_stat()
 #50.635014
 #3.064802
