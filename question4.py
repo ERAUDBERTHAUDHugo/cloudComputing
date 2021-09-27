@@ -3,194 +3,156 @@ import json
 import time
 import calendar
 from pprint import pprint
+from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 import hashlib
-
-#CONNEXION TO DB 
 
 atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 
 db=atlas.dbvelos
 
-##GET DATAS FROM APIs
 
-def get_vlille_lille():
-    url = "https://opendata.lillemetropole.fr/api/records/1.0/search/?dataset=vlille-realtime&q=&rows=3000&facet=libelle&facet=nom&facet=commune&facet=etat&facet=type&facet=etatconnexion"
-    response = requests.request("GET", url)
-    response_json = json.loads(response.text.encode('utf8'))
-    return response_json.get("records", [])
+def get_station_by_input(ville,search_string):
+    found=db.stations_states.find(({"ville":ville, "name": { "$regex": search_string.upper() } }))
+    for i in found:
+        pprint(i)
+    return found
 
-def get_vlille_rennes():
-    url="https://data.rennesmetropole.fr/api/records/1.0/search/?dataset=etat-des-stations-le-velo-star-en-temps-reel&q=&facet=nom&facet=etat&facet=nombreemplacementsactuels&facet=nombreemplacementsdisponibles&facet=nombrevelosdisponibles"
-    response = requests.request("GET", url)
-    response_json = json.loads(response.text.encode('utf8'))
-    return response_json
-
-def get_vlille_paris():
-    url_stations_statut="https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/station_status.json"
-    url_station_infos="https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/station_information.json"
-    response_statut = requests.request("GET", url_stations_statut)
-    response_json_statut = json.loads(response_statut.text.encode('utf8'))
-    reponse_station=requests.request("GET", url_station_infos)
-    response_json_station= json.loads(reponse_station.text.encode('utf8'))
-    return  [response_json_statut.get("data", []),response_json_station.get("data", [])]
-
-
-def get_vlille_lyon():
-    url_stations_statut="https://transport.data.gouv.fr/gbfs/lyon/station_status.json"
-    url_station_infos="https://transport.data.gouv.fr/gbfs/lyon/station_information.json"
-    response_statut = requests.request("GET", url_stations_statut)
-    response_json_statut = json.loads(response_statut.text.encode('utf8'))
-    reponse_station=requests.request("GET", url_station_infos)
-    response_json_station= json.loads(reponse_station.text.encode('utf8'))
-    return  [response_json_statut.get("data", []),response_json_station.get("data", [])]
-
-
-
-##INSERT DATAS IN DATABASE
-
-
-#Lille
-def insert_station_lille(lille):
-    #First, let's clear all station_state collection containing "Lille" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Lille"})
-    for i in lille:
-        
-        #GET DATA IN THE RIGHT FORMAT
-        name=i["fields"]["nom"]
-        geoloc=i["fields"]['localisation']
-        size=i["fields"]['nbvelosdispo']+i["fields"]['nbplacesdispo']
-
-
-        available=i["fields"]['etat']
-
-        velo_available=i["fields"]['nbvelosdispo']
-        place_available=i["fields"]['nbplacesdispo']
-
-        string_to_encode="Lille"+i["fields"]["nom"]
-        string_to_encode=string_to_encode.encode('utf-8')
-        unique_id= hashlib.md5()
-        unique_id.update(string_to_encode)
-        unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
-        unique_id=int(unique_id)
-        #unique_id=1
+def update_or_delete_station(ville):
     
-        timestamp =calendar.timegm(time.gmtime())  
-
-        dataset={"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
-        
-        #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-       
-        db.stations_states.insert_one(dataset)
-        db.history.insert_one(dataset)   
-
-    return 1
-
-
-
-#Rennes
-def insert_station_rennes(rennes):
-    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Rennes"})
-
-    for i in rennes["records"]:
-       
-        name=i["fields"]["nom"]
-        geoloc=i["fields"]['coordonnees']
-        available=i["fields"]['etat']
-        size=i["fields"]['nombreemplacementsactuels']
-        velo_available=i["fields"]['nombrevelosdisponibles']
-        place_available=i["fields"]['nombreemplacementsdisponibles']
-        unique_id=i["fields"]['idstation']
-        timestamp=calendar.timegm(time.gmtime())  
-        dataset={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
-
-        #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-
-        db.stations_states.insert_one(dataset)
-        db.history.insert_one(dataset)   
-
-
-    return 1 
-
-#Paris
-def insert_station_paris(paris):
-
-    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Paris"})
-
-    for i in range(0,len(paris[1]["stations"])):
-       
-        #print(paris[0]["stations"][i])
-        name=paris[1]["stations"][i]["name"]
-        geoloc=[paris[1]["stations"][i]["lat"],paris[1]["stations"][i]["lon"]]
-        size=paris[0]["stations"][i]['numBikesAvailable']+paris[0]["stations"][i]['num_docks_available']
-        
-        availablle=paris[0]["stations"][i]["is_installed"]
-
-        available="En Service"
-        if availablle!=1:
-            available="Pas Disponible"
-
-        velo_available=paris[0]["stations"][i]['numBikesAvailable']
-        place_available=paris[0]["stations"][i]['num_docks_available']
-        unique_id=paris[0]["stations"][i]['station_id']
-        timestamp=calendar.timegm(time.gmtime())  
-        
-        dataset={"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
-
-        #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-
-        db.stations_states.insert_one(dataset)
-        db.history.insert_one(dataset)   
-
-    return 1
-
-
-#Lyon
-def insert_station_lyon(lyon):
-
-    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Lyon"})
+    cond=True
+    while cond:
+        station=input("Quelle station voulez vous mettre à jour ou supprimer ?")
+        result=get_station_by_input(ville,station)
+        size=len(list(result.clone()))
+        station_to_modify=result.clone()
+        for i in result:
+            pprint(i)
+        if(size==1):
+            confirmation=input("Est-ce bien la station que vous voulez modifer ou supprimer ? (1) : OUI | (2) : NON ")
+            if(confirmation=="1"):
+                cond=False
+                break
+        else:
+            print("Vous ne pouvez pas faire de modification ou de suppression sur plus d'une station à la fois. Veuillez réitérer votre recherche.")
     
-    for i in range(0,len(lyon[1]["stations"])):
-    
-        #print(paris[0]["stations"][i])
-        name=lyon[1]["stations"][i]["name"]
-        geoloc=[lyon[1]["stations"][i]["lat"],lyon[1]["stations"][i]["lon"]]
-        size=lyon[0]["stations"][i]['num_bikes_available']+lyon[0]["stations"][i]['num_docks_available']
-        velo_available=lyon[0]["stations"][i]['num_bikes_available']
-        place_available=lyon[0]["stations"][i]['num_docks_available']
-        available=lyon[0]["stations"][i]["is_installed"]
-        timestamp=calendar.timegm(time.gmtime())
-        unique_id=lyon[1]["stations"][i]["station_id"]
+    station_action=input("Voulez-vous : (1) : Supprimer la station | (2) : Modifier la station | (3) : Quitter ")    
 
-        datasetC={"_id":unique_id, "ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"timestamp":timestamp}
+    if (station_action=="1"):
 
-        datasetH={"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"geolocalisation":geoloc,"status":available,"size":size,"station_id":unique_id,"timestamp":timestamp}
+        for i in station_to_modify:
+            db.stations_states.delete_one({"_id":i["_id"]})
 
-        #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
+    elif(station_action=="2"):
+        myquery=""
+        name=input("Nouvelle valeur pour name : (0 pour ne pas mettre à jour la donnée)")
+        status=input("Nouvelle valeur pour status : (0 pour ne pas mettre à jour la donnée)")
+        size=input("Nouvelle valeur pour size : (0 pour ne pas mettre à jour la donnée)")
+
         
-        db.stations_states.insert_one(datasetC)
-        db.history.insert_one(datasetH)   
-    return 1
+        myqueryName={"$set" : {'name': name}}
+        myqueryStatus={"$set" : {"status":status}}
+        myquerySize={"$set" : {"size":int(size)}}
+        
+        for x in station_to_modify:
+            if(name!="0"):
+                db.stations_states.update_one({"_id": x["_id"]},myqueryName)
+            if(status!="0"):
+                db.stations_states.update_one({"_id": x["_id"]},myqueryStatus)
+            if(size!="0"):
+                db.stations_states.update_one({"_id": x["_id"]},myquerySize)
+
+    else:
+        return 1
+
+
+def desactivateStation():
+	lat=input("Entrez lat\n")
+	lon=input("Entrez lon\n")
+	dist=input("Entrez distance\n")
+	ret=db.stations_states.find({"location": {"$near": {
+	        "$geometry":{
+	            "type":"Point",
+	            "coordinates":[float(lat), float(lon)]},
+	        "$maxDistance": float(dist) 
+	        },
+
+	    }
+	    },)
+
+
+	for i in ret:
+		print(i)
+		x=db.stations_states.update_one(i,{"$set":{"status":"Deactivate"}})
+		print(x)
+
+
+def get_stat():
+    
+	# tt=datetime.timestamp(datetime.now())
+
+	# dt_obj= datetime.fromtimestamp(tt)
+
+	# print(dt_obj)
+
+	# input("ok")
+
+	x=db.stations_states.aggregate([
+
+		{"$match":{"timestamp.day":{"$in":[0,1,2,3,4]}}},
+		"""{"$group":{"_id" :{
+			"velo_available/place_available" : {
+				"$lt" : 0.20}
+			}
+		} },"""
+		# {"$sort":{"velo_available/place_available":-1}}
+		])
+
+	print(x)
+	for i in x:
+	    print(i)
 
 
 
+city=input("Quelle ville voulez-vous gérer ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES ")
+action=input("Que voulez-vous faire ? (1) : Chercher une station | (2) : Mettre à jour/supprimer une station | (3) : Désactiver une zone | (4) : Obtenir des statistique | (OTHER) : quitter")
 
+if(city=="1"):
+    city="Lille"
+elif(city=="2"):
+    city="Paris"
+elif(city=="3"):
+    city="Lyon"
+elif(city=="4"):
+    city="Rennes"
 
-resp=input("De quelle ville voulez-vous stocker les informations sur les stations de vélos en libre service ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES | (OTHER) : quitter")
 
 while(True):
-    if(resp=="1"):
-        insert_station_lille(get_vlille_lille())
-    elif(resp=="2"):   
-        insert_station_paris(get_vlille_paris()) 
-    elif(resp=="3"):
-        insert_station_lyon(get_vlille_lyon())
-    elif(resp=="4"):
-        insert_station_rennes(get_vlille_rennes())
+    
+    if( action =="1"):
+        search_string=input("Quelle station cherchez-vous ? ")
+        get_station_by_input(city,search_string)
+        input_redo=input("Faire une nouvelle recherche ? (1) : OUI | (2) : NON | (OTHER) : QUIT ")
+
+    elif(action=="2"):
+        update_or_delete_station(city)
+        input_redo=input("Faire une nouvelle mise à jour ou suppression ? (1) : OUI | (2) : NON | (OTHER) : QUIT ")
+
+    elif(action=="3"):
+        desactivateStation()
+        input_redo=input("Faire modification sur une zone géographique ? (1) : OUI | (2) : NON | (OTHER) : QUIT ")
+
+    elif(action=="3"):
+        get_stat()
+        input_redo=2
+
     else :
         break
-    time.sleep(45)
+    
+    #next action
+    if(input_redo=="2"):
+        action=input("Que voulez-vous faire ? (1) : Chercher une station | (2) : Mettre à jour/supprimer une station | (3) : Désactiver une zone | (4) : Obtenir des statistique | (OTHER) : quitter")
+    elif(input_redo!="1"):
+        break
+ 
     
