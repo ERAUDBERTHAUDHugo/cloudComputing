@@ -28,7 +28,9 @@ if resp=="1":
             "coordinates":[float(lat), float(lon)]},
        
         }
-    }}).limit(int(nbreStation))
+    }},
+    {"_id":0,"timestamp":0,"size":0}
+    ).limit(int(nbreStation))
     for i in ret:
         pprint(i)
 elif resp=="2":
@@ -38,20 +40,25 @@ elif resp=="2":
             "coordinates":[float(lat), float(lon)]},
        
         }
-    }}).limit(int(nbreStation))
+    }},
+    {"_id":0,"timestamp":0,"size":0}
+    ).limit(int(nbreStation))
     for i in ret:
         pprint(i)
     
 elif resp == "3":
-    ret=db.stations_states.find({"ville":"Lyon","location": {"$near": {
+    ret=db.stations_states.find({ "ville":"Lyon","location": {"$near": {
         "$geometry":{
             "type":"Point",
             "coordinates":[float(lat), float(lon)]},
        
         }
-    }}).limit(int(nbreStation))
+    }},
+    {"_id":0,"timestamp":0,"size":0}
+    ).limit(int(nbreStation))
     for i in ret:
         pprint(i)
+
 elif resp=="4":
     ret=db.stations_states.find({"ville":"Rennes","location": {"$near": {
         "$geometry":{
@@ -59,7 +66,9 @@ elif resp=="4":
             "coordinates":[float(lat), float(lon)]},
        
         }
-    }}).limit(int(nbreStation))
+    }},
+    {"_id":0,"timestamp":0,"size":0}
+    ).limit(int(nbreStation))
     for i in ret:
         pprint(i)
 else:
@@ -69,7 +78,9 @@ else:
             "coordinates":[float(lat), float(lon)]},
        
         }
-    }}).limit(int(nbreStation))
+    }},
+    {"_id":0,"timestamp":0,"size":0}
+    ).limit(int(nbreStation))
     for i in ret:
         print(i)
     
