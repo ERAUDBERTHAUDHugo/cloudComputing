@@ -7,6 +7,10 @@ from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 import hashlib
 
+# IN THIS QUESTION WE ARE STORING ALL THE DATAS FROM THE API's In 2 COLLECTIONS : ONE FOR THE CURRENT STATE OF THE STATIONS 
+#(stations_states) AND ONE FOR THE HISTORY OF DATAS (history)
+
+
 #CONNEXION TO DB 
 
 atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
@@ -53,8 +57,7 @@ def get_vlille_lyon():
 
 #Lille
 def format_data_lille(lille):
-    #First, let's clear all station_state collection containing "Lille" as "ville" : 
-    #x = db["stations_states"].delete_many({"ville":"Lille"})
+    
 
     array_of_datas_H=[]
     array_of_datas_C=[]
@@ -86,20 +89,15 @@ def format_data_lille(lille):
         datasetC={"_id":unique_id,"ville" : 'Lille',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
-        """try:
-            db.stations_states.insert_one(datasetC)
-            db.history.insert_one(datasetH)
-        except DuplicateKeyError:
-            pass"""
-    print(array_of_datas_C)
+    
     return array_of_datas_C,array_of_datas_H
 
 
 
 #Rennes
 def format_data_rennes(rennes):
-    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Rennes"})
+    array_of_datas_H=[]
+    array_of_datas_C=[]
 
     for i in rennes["records"]:
        
@@ -124,20 +122,17 @@ def format_data_rennes(rennes):
         datasetH={"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":timestamp}
         datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
-
-        
-        db.stations_states.insert_one(datasetC)
-        db.history.insert_one(datasetH)
+        array_of_datas_H.append(datasetH)
+        array_of_datas_C.append(datasetC)
     
-            
-
-    return 1 
+    return array_of_datas_C,array_of_datas_H
 
 #Paris
 def format_data_paris(paris):
 
-    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Paris"})
+    array_of_datas_H=[]
+    array_of_datas_C=[]
+
     for i in range(0,len(paris[1]["stations"])):
        
         #print(paris[0]["stations"][i])
@@ -161,21 +156,18 @@ def format_data_paris(paris):
         datasetC={"_id":unique_id,"ville" : 'Paris',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
-        try:
-            db.stations_states.insert_one(datasetC)
-            db.history.insert_one(datasetH)
-        except DuplicateKeyError:
-            pass
-
-    return 1
+        array_of_datas_H.append(datasetH)
+        array_of_datas_C.append(datasetC)
+    
+    return array_of_datas_C,array_of_datas_H
 
 
 #Lyon
 def format_data_lyon(lyon):
 
-    #First, let's clear all station_state collection containing "Rennes" as "ville" : 
-    x = db["stations_states"].delete_many({"ville":"Lyon"})
-    
+    array_of_datas_H=[]
+    array_of_datas_C=[]
+
     for i in range(0,len(lyon[1]["stations"])):
     
         #print(paris[0]["stations"][i])
@@ -203,32 +195,28 @@ def format_data_lyon(lyon):
         datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name,"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":timestamp}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
-        try:
-            db.stations_states.insert_one(datasetC)
-            db.history.insert_one(datasetH)
-        except DuplicateKeyError:
-            pass  
-    return 1
+        array_of_datas_H.append(datasetH)
+        array_of_datas_C.append(datasetC)
+    
+    return array_of_datas_C,array_of_datas_H
 
 
 def insert_in_db(ville,array_Current,array_History):
     db.history.insert_many(array_History)
-    #db["stations_states"].delete_many({"villle":ville})
-    #db.stations_states.insert_many(array_Current)
-    #check if datas already exist for this city. If yes just update what is found, else insert all
     x=db.stations_states.find({"ville":ville})
     empty=True
     for i in x :
         empty=False
-       break
+        break
     
     if(empty):
         db.stations_states.insert_many(array_Current)
     else: 
-        for i in array_Current:
+        for i in array_Current:        
+            timestamp=calendar.timegm(time.gmtime())
             myquery=i["_id"]
-            newvalues={"velo_available":i["_id"],"velo_available":,"":}
-            db.stations_states.update_one({"_id":myquey}, newvalues)
+            newvalues={ "$set":{"velo_available":i["velo_available"],"place_available":i["place_available"],'timestamp':timestamp}}
+            db.stations_states.update_one({"_id":myquery}, newvalues)
     return 1 
 
 
@@ -239,11 +227,14 @@ while(True):
         arrays=format_data_lille(get_vlille_lille())
         insert_in_db("Lille",arrays[0],arrays[1])
     elif(resp=="2"):   
-        format_data_paris(get_vlille_paris()) 
+        arrays=format_data_paris(get_vlille_paris())
+        insert_in_db("Paris",arrays[0],arrays[1]) 
     elif(resp=="3"):
-        format_data_lyon(get_vlille_lyon())
+        arrays=format_data_lyon(get_vlille_lyon())
+        insert_in_db("Lyon",arrays[0],arrays[1])
     elif(resp=="4"):
-        format_data_rennes(get_vlille_rennes())
+        arrays=format_data_rennes(get_vlille_rennes())
+        insert_in_db("Rennes",arrays[0],arrays[1])
     else :
         break
     time.sleep(45)

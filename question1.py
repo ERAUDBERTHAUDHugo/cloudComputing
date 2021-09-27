@@ -3,18 +3,26 @@ import json
 from pprint import pprint
 from pymongo import MongoClient
 
+# IN THIS QUESTION WE ARE GETTING ALL DATAS FROM THE DIFFERENT API's AND PRINT THEM
 
+
+
+#GET DATAS 
 def get_vlille_lille():
     url = "https://opendata.lillemetropole.fr/api/records/1.0/search/?dataset=vlille-realtime&q=&rows=3000&facet=libelle&facet=nom&facet=commune&facet=etat&facet=type&facet=etatconnexion"
     response = requests.request("GET", url)
     response_json = json.loads(response.text.encode('utf8'))
     return response_json.get("records", [])
 
+
+
 def get_vlille_rennes():
     url="https://data.rennesmetropole.fr/api/records/1.0/search/?dataset=etat-des-stations-le-velo-star-en-temps-reel&q=&facet=nom&facet=etat&facet=nombreemplacementsactuels&facet=nombreemplacementsdisponibles&facet=nombrevelosdisponibles"
     response = requests.request("GET", url)
     response_json = json.loads(response.text.encode('utf8'))
     return response_json
+
+
 
 def get_ville_paris():
     url_stations_statut="https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/station_status.json"
@@ -24,6 +32,7 @@ def get_ville_paris():
     reponse_station=requests.request("GET", url_station_infos)
     response_json_station= json.loads(reponse_station.text.encode('utf8'))
     return  [response_json_statut.get("data", []),response_json_station.get("data", [])]
+
 
 
 def get_ville_lyon():
@@ -40,6 +49,9 @@ paris = get_ville_paris()
 rennes = get_vlille_rennes()
 lyon = get_ville_lyon()
 
+
+
+# PRINT DATAS
 
 #Lille
 def show_data_station_lille(lille):
@@ -58,8 +70,10 @@ def show_data_station_lille(lille):
         available=i["fields"]['etat']
     
         dataset={"geolocalisation":geoloc,"size":size,"name":name,"tpe":tpe,"available":available}
-        print(dataset)
+        pprint(dataset)
     return 1
+
+
 
 
 
@@ -75,8 +89,10 @@ def show_data_station_rennes(rennes):
         available=i["fields"]['etat']
         size=i["fields"]['nombreemplacementsactuels']
         dataset={"geolocalisation":geoloc,"size":size,"name":name,"tpe":tpe,"available":available}
-        print(dataset)
+        pprint(dataset)
     return 1
+
+
 
 
 
@@ -93,8 +109,10 @@ def show_data_station_paris(paris):
         tpe=""
         available=paris[0]["stations"][i]["is_installed"]
         dataset={"geolocalisation":geoloc,"size":size,"name":name,"tpe":tpe,"available":available}
-        print(dataset)
+        pprint(dataset)
     return 1
+
+
 
 def show_data_station_lyon(lyon):
  
@@ -109,7 +127,7 @@ def show_data_station_lyon(lyon):
         tpe=""
         available=lyon[0]["stations"][i]["is_installed"]
         dataset={"geolocalisation":geoloc,"size":size,"name":name,"tpe":tpe,"available":available}
-        print(dataset)
+        pprint(dataset)
     return 1
 
 
