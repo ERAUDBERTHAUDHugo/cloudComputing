@@ -1,10 +1,8 @@
 import requests
 import json
 from pprint import pprint
-from pymongo import MongoClient
 
 # IN THIS QUESTION WE ARE GETTING ALL DATAS FROM THE DIFFERENT API's AND PRINT THEM
-
 
 
 #GET DATAS 

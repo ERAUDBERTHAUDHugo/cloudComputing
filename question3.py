@@ -1,11 +1,6 @@
-import requests
-import json
-import time
-import calendar
 from pprint import pprint
-from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
-import hashlib
+
 
 #CONNEXION TO DB 
 

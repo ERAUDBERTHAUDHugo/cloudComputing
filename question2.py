@@ -2,8 +2,6 @@ import requests
 import json
 import time
 import calendar
-from pprint import pprint
-from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 import hashlib
 from datetime import datetime
@@ -236,14 +234,18 @@ while(True):
         insert_in_db("Lille",arrays[0],arrays[1])
     elif(resp=="2"):   
         arrays=format_data_paris(get_vlille_paris())
-        insert_in_db("Paris",arrays[0],arrays[1]) 
+        insert_in_db("Paris",arrays[0],arrays[1])
+        
     elif(resp=="3"):
         arrays=format_data_lyon(get_vlille_lyon())
         insert_in_db("Lyon",arrays[0],arrays[1])
+        
     elif(resp=="4"):
         arrays=format_data_rennes(get_vlille_rennes())
         insert_in_db("Rennes",arrays[0],arrays[1])
+       
     else :
         break
+    print("\nOperation effectuée.")  
     time.sleep(45)
     
