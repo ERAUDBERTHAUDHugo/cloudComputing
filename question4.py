@@ -1,7 +1,8 @@
 from pprint import pprint
 from pymongo import MongoClient
 
-atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+
+atlas = MongoClient('mongodb+srv://database1:root@cluster0.bj56v.mongodb.net/myFirstDatabase?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE')
 
 db=atlas.dbvelos
 
@@ -81,21 +82,18 @@ def desactivateStation():
 
 
 def get_stat(city):
-	x=db.stations_states.aggregate([
+	x=db.history.aggregate([
 		{"$match":{"ville":city}},
 		{"$match":{"size":{"$gt":0}}},
 		{"$match":{"timestamp.day":{"$in":[0,1,2,3,4]}}},
-		{"$match":{"timestamp.time":{"$eq":20}}},
+		{"$match":{"timestamp.time":{"$eq":18}}},
 		{"$project":{"_id":0,"ville":1,"name":1,"ratio":{"$divide":["$velo_available","$size"]},"velo_available":1,"place_available":1,"location":1,"status":1,"timestamp":1},
 		},
 		{"$match":{"ratio":{"$lt":0.20}}}
 		])
 	
-	print(x)
 	for i in x:
 		print(i)
-
-
 
 city=input("Quelle ville voulez-vous gérer ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES ")
 action=input("Que voulez-vous faire ? (1) : Chercher une station | (2) : Mettre à jour/supprimer une station | (3) : Désactiver une zone | (4) : Obtenir des statistique | (OTHER) : quitter")

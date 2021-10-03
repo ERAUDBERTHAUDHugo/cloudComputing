@@ -86,8 +86,8 @@ def format_data_lille(lille):
 
         dt_obj= datetime.fromtimestamp(timestamp)
 
-        datasetH={"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
-        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetH={"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
     
@@ -121,8 +121,8 @@ def format_data_rennes(rennes):
         timestamp=calendar.timegm(time.gmtime())
         dt_obj= datetime.fromtimestamp(timestamp)
 
-        datasetH={"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
-        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetH={"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
@@ -155,8 +155,8 @@ def format_data_paris(paris):
         timestamp=calendar.timegm(time.gmtime())  
 
         dt_obj= datetime.fromtimestamp(timestamp)
-        datasetH={"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
-        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetH={"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         array_of_datas_H.append(datasetH)
@@ -195,8 +195,8 @@ def format_data_lyon(lyon):
         unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
         unique_id=int(unique_id)
 
-        datasetH={"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
-        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetH={"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"hour":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         array_of_datas_H.append(datasetH)
@@ -220,13 +220,13 @@ def insert_in_db(ville,array_Current,array_History):
             timestamp=calendar.timegm(time.gmtime())
             dt_obj= datetime.fromtimestamp(timestamp)
             myquery=i["_id"]
-            newvalues={ "$set":{"velo_available":i["velo_available"],"place_available":i["place_available"],'timestamp':[dt_obj.weekday(),dt_obj.hour]}}
+            newvalues={ "$set":{"velo_available":i["velo_available"],"place_available":i["place_available"],'timestamp':{"day_number":dt_obj.day,"month":dt_obj.month,"year":dt_obj.year,"time":dt_obj.hour,"minute":dt_obj.minute,"second":dt_obj.second,"day":dt_obj.weekday()}}}
             db.stations_states.update_one({"_id":myquery}, newvalues)
 
     return 1 
 
 
-resp=input("De quelle ville voulez-vous stocker les informations sur les stations de vélos en libre service ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES | (OTHER) : quitter")
+resp=input("De quelle ville voulez-vous stocker les informations sur les stations de vélos en libre service ? (1) : LILLE | (2) : PARIS | (3) : LYON | (4) : RENNES | (OTHER) : quitter\n")
 
 while(True):
     if(resp=="1"):
