@@ -88,8 +88,8 @@ def format_data_lille(lille):
 
         dt_obj= datetime.fromtimestamp(timestamp)
 
-        datasetH={"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
-        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetH={"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Lille',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
     
@@ -123,8 +123,8 @@ def format_data_rennes(rennes):
         timestamp=calendar.timegm(time.gmtime())
         dt_obj= datetime.fromtimestamp(timestamp)
 
-        datasetH={"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
-        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetH={"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Rennes',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         array_of_datas_H.append(datasetH)
         array_of_datas_C.append(datasetC)
@@ -157,8 +157,8 @@ def format_data_paris(paris):
         timestamp=calendar.timegm(time.gmtime())  
 
         dt_obj= datetime.fromtimestamp(timestamp)
-        datasetH={"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
-        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetH={"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Paris',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         array_of_datas_H.append(datasetH)
@@ -197,8 +197,8 @@ def format_data_lyon(lyon):
         unique_id=str(int(unique_id.hexdigest(), 16))[0:12]
         unique_id=int(unique_id)
 
-        datasetH={"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
-        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.weekday(),"time":dt_obj.hour}}
+        datasetH={"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"station_id":int(unique_id),"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
+        datasetC={"_id":unique_id,"ville" : 'Lyon',"name":name.upper(),"size":size,"velo_available":velo_available,"place_available":place_available,"location": {"type":"Point","coordinates":geoloc},"status":available,"size":size,"timestamp":{"day":dt_obj.day(),"month":dt_obj.month(),"year":dt_obj.year(),"hour":dt_obj.hour,"minute":dt_obj.minute(),"second":dt_obj.second,"day_type":dt_obj.weekday()}}
         #INSERT DATA IN HISTORY COLLECTION ADN STATION_STATE COLLECTION
         
         array_of_datas_H.append(datasetH)
