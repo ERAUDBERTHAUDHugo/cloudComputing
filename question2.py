@@ -2,8 +2,6 @@ import requests
 import json
 import time
 import calendar
-from pprint import pprint
-from pymongo.errors import DuplicateKeyError
 from pymongo import MongoClient
 import hashlib
 from datetime import datetime
@@ -248,6 +246,6 @@ while(True):
        
     else :
         break
-    print("\nOperation oeffectuée.")  
+    print("\nOperation effectuée.")  
     time.sleep(45)
     
