@@ -48,12 +48,16 @@ def get_stat():
 
 	x=db.stations_states.aggregate([
 
-		{"$match":{"timestamp.day":{"$in":[0,1,2,3,4]}}},
-		{"$group":{"_id" :{
-			"velo_available/place_available" : {
-				"$lt" : 0.20}
-			}
-		}},
+		{"$project":{
+
+			"timestamp.day":{"$in":[0,1,2,3,4]}}},
+			"result": { "$and": [ { $gt: [ "$qty", 100 ] }, { $lt: [ "$qty", 250 ] } ] }
+		{"$match":{"timestamp.hour":{"$in":[18,19]}}}
+		# {"$group":{"_id" :{
+		# 	"velo_available/place_available" : {
+		# 		"$lt" : 0.20}
+		# 	}
+		# }},
 		# {"$sort":{"velo_available/place_available":-1}}
 		])
 
